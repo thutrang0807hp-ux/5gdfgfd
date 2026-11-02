@@ -1,0 +1,24 @@
+GFLOW STUDIO - HUONG DAN WINDOWS
+
+1. Giai nen toan bo tep ZIP (Extract All). Khong chay ngay trong ZIP.
+2. Cai Python 3.12 tu https://www.python.org/downloads/windows/
+   Chon "Add python.exe to PATH". Can co Google Chrome tren may.
+3. Mo thu muc 5gdfgfd, bam dup setup-windows.bat.
+   Buoc nay can Internet, tai thu vien va Chromium; chi can lam lan dau.
+4. Khi bao thanh cong, bam dup start.bat trong cung thu muc.
+5. Giao dien mo trong trinh duyet. Neu khong tu mo, truy cap:
+   http://127.0.0.1:8765
+6. Nhan Dang nhap Google, dang nhap trong cua so Chrome.
+   Nhan Kiem tra phien, sau do tao anh/video.
+
+Giu nguyen hai thu muc 5gdfgfd va gflow-cli canh nhau.
+Giu cua so dong lenh mo khi su dung. Nhan Ctrl+C de dung.
+Video dung credit Google Flow cua ban.
+
+Day la ban ma nguon kem tep cai/chay, khong phai tep EXE.
+Giao dien va API da duoc kiem thu tren Linux voi Chromium.
+Chua kiem thu tren Windows hoac tao anh/video thanh cong voi tai khoan Google.
+Can tai khoan Google co quyen dung Flow; khong kem tai khoan hay credit.
+
+Ma nguon engine: https://github.com/ffroliva/gflow-cli (MIT)
+Ban engine: 1619429f12e31a806590a19e1a3f3218f291d582

@@ -1,0 +1,29 @@
+GFLOW STUDIO PORTABLE - WINDOWS 64-BIT
+
+1. Bam chuot phai tep ZIP -> Extract All / Giai nen tat ca.
+2. Mo thu muc GFlow-Studio-Portable -> bam dup MO-UNG-DUNG.bat.
+3. Giao dien mo trong trinh duyet. Giu cua so dong lenh mo.
+4. Nhan Dang nhap Google -> dang nhap trong cua so Chrome -> Kiem tra phien.
+
+KHONG chay setup-windows.bat cua ban cu.
+KHONG can cai Python, pip, uv hay Visual C++ Build Tools.
+Python 3.12 va thu vien Windows da duoc dong goi san, gom lz4 da bien dich.
+Khong su dung Python 3.15 tren may ban. Khong thay doi Python he thong.
+
+Can Windows 10/11 64-bit va Google Chrome da cai tren may.
+Tao anh/video can Internet va tai khoan co quyen Google Flow.
+Video su dung credit tai khoan. Khong kem tai khoan hay credit.
+
+Phien Google luu trong data/profiles. Anh/video luu trong app/out.
+De xoa: dong ung dung, xoa toan bo thu muc GFlow-Studio-Portable.
+
+Ung dung tu chon cong trong de tranh xung dot voi ban dang mo.
+Neu trinh duyet khong tu mo, xem so cong trong cua so dong lenh
+va nhap http://127.0.0.1:SO_CONG (thay SO_CONG bang so hien tren man hinh).
+
+DA KIEM TRA: hash va wheel Windows, dong goi ZIP, giao dien/API tren Linux.
+CHUA KIEM THU: chay executable tren Windows va tao anh/video Google that.
+
+Engine gflow-cli 0.92.1 (MIT): https://github.com/ffroliva/gflow-cli
+Python Windows duoc uv tai va xac minh; license trong runtime/LICENSE.txt.
+License cua thu vien nam trong runtime/Lib/site-packages/*dist-info/.

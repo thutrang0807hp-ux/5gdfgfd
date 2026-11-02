@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GFlow Studio</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<aside><div class="brand"><span class="logo">G</span> GFlow Studio</div><p class="muted">KHÔNG GIAN SÁNG TẠO</p><a class="nav active" href="#create">✦ &nbsp; Tạo nội dung</a><a class="nav" href="#history">▤ &nbsp; Lịch sử & kết quả</a><div class="aside-bottom">Dựa trên gflow-cli<br><small>Ảnh & video với Google Flow</small></div></aside>
+<main>
+<header><span>STUDIO / TẠO NỘI DUNG</span><span id="connection" class="pill">Đang kết nối…</span></header>
+<section id="create"><div class="eyebrow">TỪ Ý TƯỞNG ĐẾN KHUNG HÌNH</div><h1>Ý tưởng của bạn.<br><span>Không giới hạn sáng tạo.</span></h1><p class="intro">Biến những dòng mô tả thành ảnh và video với Google Flow.</p>
+<div id="setup" class="notice" role="status">Đang kiểm tra kết nối…</div>
+<div class="workspace"><form id="generate" class="panel"><div class="panel-heading"><h2>Bạn muốn tạo gì?</h2><span class="step">01 / SÁNG TẠO</span></div><div class="tabs" role="group" aria-label="Loại nội dung"><button type="button" class="tab selected" data-kind="image" aria-pressed="true">▧ &nbsp; Tạo ảnh</button><button type="button" class="tab" data-kind="video" aria-pressed="false">▷ &nbsp; Tạo video</button></div>
+<label for="prompt">Mô tả ý tưởng</label><textarea id="prompt" maxlength="5000" required placeholder="Một ngôi nhà nhỏ bên bờ biển, ánh nắng chiều vàng ấm, phong cách điện ảnh…"></textarea><div class="under"><span>Càng chi tiết, kết quả càng sát ý tưởng.</span><span id="counter">0 / 5000</span></div>
+<div class="two"><div><label for="model">Mô hình ảnh</label><select id="model"><option value="nano2">Nano Banana 2</option><option value="nano-pro">Nano Banana Pro</option><option value="nano2-lite">Nano Banana 2 Lite</option></select></div><div><label for="aspect">Tỉ lệ khung hình</label><select id="aspect"><option>16:9</option><option>9:16</option><option>1:1</option><option>4:3</option><option>3:4</option></select></div></div>
+<label for="profile">Tên hồ sơ tài khoản</label><input id="profile" value="default" pattern="[A-Za-z0-9_-]{1,64}" required><small>Dùng cùng một tên khi đăng nhập và tạo nội dung.</small>
+<label id="credit-label" class="check" hidden><input id="credits" type="checkbox">Tôi đồng ý sử dụng credit tài khoản Google Flow cho video này.</label>
+<button class="primary" id="submit" type="submit">✦ &nbsp; Tạo ảnh</button><div id="error" class="error" role="alert"></div></form>
+<div class="right"><div class="art"><div class="orb"></div><div class="art-caption"><span>KHỞI ĐẦU TỪ MỘT Ý TƯỞNG</span><h2>Một câu mô tả.<br>Một thế giới mới.</h2><p>Ảnh và video được tạo sẽ xuất hiện trong thư viện bên dưới.</p></div></div><div class="panel account"><h2>Kết nối Google Flow</h2><p>Đăng nhập trong cửa sổ Chrome mở trên máy chạy ứng dụng. Không nhập mật khẩu tại đây.</p><div class="buttons"><button type="button" id="login">Đăng nhập Google</button><button type="button" id="status">Kiểm tra phiên</button></div><small>Video sử dụng credit của bạn. Ứng dụng không tự gửi lại tác vụ thất bại.</small></div></div></div>
+</section>
+<section id="history"><div class="history-heading"><div><div class="eyebrow">THƯ VIỆN CỦA BẠN</div><h2>Lịch sử & kết quả</h2></div><span id="job-count" class="pill">0 tác vụ</span></div><div id="jobs"><div class="empty">Chưa có nội dung nào.<br><small>Nhập ý tưởng phía trên để bắt đầu.</small></div></div></section>
+<footer>GFlow Studio · Chạy trên máy của bạn · Dựa trên dự án mã nguồn mở gflow-cli (MIT).</footer>
+</main></body></html>
