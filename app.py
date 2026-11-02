@@ -21,6 +21,12 @@ OUTPUT = ROOT / 'out'
 JOBS: dict[str, dict] = {}
 LOCK = threading.Lock()
 WORK: queue.Queue = queue.Queue(maxsize=30)
+RECOVERY_RE = re.compile(r'gflow\s+data\s+download\s+([0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12})(?![0-9a-fA-F-])')
+
+
+def recovery_media(message: str) -> str | None:
+    match = RECOVERY_RE.search(message)
+    return match.group(1).lower() if match else None
 
 
 def command() -> list[str]:
@@ -34,6 +40,13 @@ def build_args(payload: dict, destination: Path) -> list[str]:
         raise ValueError('Tên tài khoản chỉ gồm chữ, số, dấu gạch ngang hoặc gạch dưới.')
     if action in ('login', 'status'):
         return ['auth', action, '--profile', profile] + (['--browser', 'chrome'] if action == 'login' else [])
+    if action == 'download':
+        media_id = payload.get('media_id', '')
+        try:
+            media_id = str(uuid.UUID(media_id))
+        except (ValueError, TypeError, AttributeError):
+            raise ValueError('Mã video phải là UUID, không phải liên kết hay câu lệnh.') from None
+        return ['data', 'download', media_id, '--profile', profile, '--out', str(destination)]
     if action != 'generate':
         raise ValueError('Thao tác không hợp lệ.')
     prompt = payload.get('prompt', '')
@@ -71,29 +84,75 @@ def load_jobs() -> None:
         for job in JOBS.values():
             if job['status'] in ('queued', 'running'):
                 job.update(status='interrupted', message='Ứng dụng đã khởi động lại. Kiểm tra Flow trước khi tạo lại; tác vụ có thể đã được gửi.')
+            if job.get('kind') == 'video' and job['status'] == 'failed':
+                media_id = recovery_media(job.get('message', ''))
+                if media_id:
+                    job.update(status='download_failed', media_id=media_id)
+        save_jobs()
+
+
+def execute(args: list[str], env: dict, minimize: bool) -> subprocess.CompletedProcess:
+    options = {'creationflags': subprocess.CREATE_NO_WINDOW} if sys.platform == 'win32' else {}
+    process = subprocess.Popen(command() + args, cwd=ROOT, env=env,
+                               stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, text=True, encoding='utf-8',
+                               errors='replace', **options)
+    stopped = threading.Event()
+    watcher = None
+    if minimize and sys.platform == 'win32':
+        from windows_background import minimize_flow_windows
+        watcher = threading.Thread(target=minimize_flow_windows,
+                                   args=(process.pid, stopped), daemon=True)
+        watcher.start()
+    try:
+        try:
+            stdout, stderr = process.communicate(timeout=1200)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.communicate()
+            raise
+        return subprocess.CompletedProcess(process.args, process.returncode, stdout, stderr)
+    finally:
+        stopped.set()
+        if watcher:
+            watcher.join(timeout=2)
+
+
+def complete_job(job_id: str, result: subprocess.CompletedProcess) -> None:
+    from gflow_cli.redaction import redact_sensitive_text
+    raw = result.stdout + '\n' + result.stderr
+    message = redact_sensitive_text(raw)[-16000:]
+    with LOCK:
+        job = JOBS[job_id]
+        media_id = recovery_media(raw) if job.get('kind') == 'video' else None
+        status = 'succeeded' if result.returncode == 0 else 'failed'
+        if result.returncode != 0 and media_id:
+            status = 'download_failed'
+            job['media_id'] = media_id
+        job.update(status=status, exit_code=result.returncode, message=message)
         save_jobs()
 
 
 def worker() -> None:
-    from gflow_cli.redaction import redact_sensitive_text
     while True:
         job_id, args = WORK.get()
         with LOCK:
             JOBS[job_id]['status'] = 'running'
             save_jobs()
         env = dict(os.environ, GFLOW_CLI_UPDATE_CHECK='0', NO_COLOR='1', TERM='dumb',
-                   GFLOW_CLI_OUTPUT_DIR=str(OUTPUT))
+                   GFLOW_CLI_OUTPUT_DIR=str(OUTPUT), PYTHONUTF8='1')
         try:
             # One queue serializes all browser-owning commands, including login.
-            result = subprocess.run(command() + args, cwd=ROOT, env=env,
-                                    capture_output=True, text=True, timeout=1200)
-            message = redact_sensitive_text(result.stdout + '\n' + result.stderr)[-16000:]
-            status = 'succeeded' if result.returncode == 0 else 'failed'
-            code = result.returncode
+            job = JOBS[job_id]
+            result = execute(args, env, minimize=job.get('background', True) and job['action'] != 'login')
+            complete_job(job_id, result)
         except subprocess.TimeoutExpired:
             status, code, message = 'indeterminate', None, 'Quá thời gian chờ. Kiểm tra dự án trên Google Flow trước khi thử lại; nội dung có thể vẫn đang được tạo.'
         except OSError:
             status, code, message = 'failed', None, 'Không khởi chạy được gflow-cli. Kiểm tra cài đặt Python.'
+        else:
+            WORK.task_done()
+            continue
         with LOCK:
             JOBS[job_id].update(status=status, exit_code=code, message=message)
             save_jobs()
@@ -103,6 +162,22 @@ def worker() -> None:
 def enqueue(payload: dict) -> dict:
     job_id = uuid.uuid4().hex
     destination = OUTPUT / job_id
+    source = None
+    if payload.get('action') == 'recover':
+        source_id = payload.get('source_id')
+        if not isinstance(source_id, str):
+            raise ValueError('Tác vụ gốc không hợp lệ.')
+        with LOCK:
+            source = dict(JOBS.get(source_id, {}))
+            if any(j.get('source_id') == source_id and j['status'] in ('queued', 'running') for j in JOBS.values()):
+                raise ValueError('Video này đang được tải lại. Hãy chờ tác vụ hiện tại.')
+        media_id = source.get('media_id') or recovery_media(source.get('message', ''))
+        if not media_id or source.get('kind') != 'video':
+            raise ValueError('Chưa có mã video để tải lại. Hãy dùng mã video trong thông báo lỗi.')
+        payload = dict(action='download', kind='video', media_id=media_id,
+                       profile=source.get('profile', payload.get('profile', 'default')),
+                       background=payload.get('background', True), source_id=source_id,
+                       prompt=source.get('prompt', ''))
     args = build_args(payload, destination)
     with LOCK:
         if WORK.full():
@@ -110,6 +185,9 @@ def enqueue(payload: dict) -> dict:
         destination.mkdir(parents=True)
         job = dict(id=job_id, action=payload.get('action', 'generate'),
                    prompt=payload.get('prompt', ''), kind=payload.get('kind', 'image'),
+                   profile=payload.get('profile', 'default'),
+                   background=payload.get('background') is not False,
+                   media_id=payload.get('media_id'), source_id=payload.get('source_id'),
                    status='queued', created=time.time(), message='', exit_code=None)
         JOBS[job_id] = job
         save_jobs()

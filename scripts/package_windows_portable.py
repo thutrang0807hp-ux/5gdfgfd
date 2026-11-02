@@ -44,7 +44,7 @@ def package(runtime: Path, site: Path, output: Path) -> None:
         for path in source.rglob('*'):
             if path.is_file():
                 files[f'{prefix}/{path.relative_to(source).as_posix()}'] = path
-    for name in ('app.py', 'static/index.html', 'static/style.css', 'static/app.js'):
+    for name in ('app.py', 'windows_background.py', 'static/index.html', 'static/style.css', 'static/app.js'):
         files['app/' + name] = root / name
     for name in ('MO-UNG-DUNG.bat', 'DOC-TRUOC.txt'):
         files[name] = root / 'portable' / name

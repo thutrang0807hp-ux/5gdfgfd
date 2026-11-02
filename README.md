@@ -10,6 +10,38 @@ khoản có quyền truy cập repository này.
 
 SHA-256 của gói tải ở [GFlow-Studio-Portable-Windows.sha256](GFlow-Studio-Portable-Windows.sha256).
 
+**Đang dùng bản portable cũ?** Tải [bản cập nhật nhỏ](https://github.com/thutrang0807hp-ux/5gdfgfd/raw/refs/heads/main/GFlow-Studio-Cap-Nhat.zip),
+giải nén rồi chép `CAP-NHAT.bat` vào cạnh `MO-UNG-DUNG.bat` trong thư mục đang dùng.
+Mở `CAP-NHAT.bat`, đóng cửa sổ dòng lệnh GFlow cũ rồi nhấn Enter như hướng dẫn.
+Tệp cập nhật tự tải mã phiên bản cố định, kiểm tra SHA-256 và chỉ thay tệp ứng dụng;
+giữ nguyên tài khoản, catalog video, lịch sử và video đã tải. Cần Internet khi cập nhật.
+
+### Video đã tạo trên Flow nhưng phần mềm báo lỗi tải về
+
+Nếu thông báo có `signed media URL returned HTTP 302` và đề nghị
+`gflow data download <mã-video>`, video đã có trên Flow nhưng chưa tải được về máy.
+Bản mới hiển thị **Đã tạo trên Flow · chưa tải về** cùng nút **Tải lại video đã tạo**.
+Nút chỉ gọi `gflow data download`, không gửi lại yêu cầu tạo và không dùng thêm
+credit. Các lỗi cũ có mã tải lại sẽ được nhận diện khi mở lại ứng dụng.
+
+Cũng có ô nhập mã video trong phần Lịch sử để tải lại khi không còn tác vụ cũ.
+Phải dùng đúng hồ sơ tài khoản và giữ thư mục `data/profiles` của bản đã tạo video,
+vì lệnh tải lại cần bản ghi video trong catalog. Một yêu cầu tải lại vẫn có thể lỗi
+nếu Flow chưa cung cấp được liên kết mới; thông báo lỗi sẽ nằm trong chi tiết.
+
+### Không để trang Flow nhảy lên màn hình
+
+Tùy chọn **Tự thu nhỏ cửa sổ Chrome của Flow khi tạo/tải** bật mặc định trên
+Windows. Ứng dụng theo dõi Chrome do tiến trình gflow của tác vụ đó mở và thu nhỏ
+cửa sổ; không thao tác cửa sổ Chrome không thuộc tác vụ. Đây là thu nhỏ Chrome,
+không phải chạy trình duyệt headless: cửa sổ có thể hiện thoáng qua lúc khởi động.
+Đăng nhập luôn giữ cửa sổ hiện để người dùng thao tác. Lựa chọn áp dụng cho tác vụ
+tiếp theo: bỏ chọn trước khi chạy nếu cần xem hoặc thao tác trong Chrome.
+
+Đã kiểm thử nhận diện lỗi tải, di chuyển lịch sử cũ, hàng đợi tải lại không tạo mới,
+truyền tùy chọn thu nhỏ và giao diện bằng Chromium. Chưa có phiên Google thật để
+xác minh tải lại clip, hoặc máy Windows để kiểm chứng Win32 thu nhỏ cửa sổ.
+
 ## Bản Windows portable — mở để chạy, không cài Python
 
 Gói `GFlow-Studio-Portable-Windows.zip` chứa sẵn Python 3.12 dành cho Windows

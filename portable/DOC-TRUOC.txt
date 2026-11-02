@@ -5,6 +5,12 @@ GFLOW STUDIO PORTABLE - WINDOWS 64-BIT
 3. Giao dien mo trong trinh duyet. Giu cua so dong lenh mo.
 4. Nhan Dang nhap Google -> dang nhap trong cua so Chrome -> Kiem tra phien.
 
+Video co tren Flow nhung loi tai: bam "Tai lai video da tao" trong lich su.
+Lenh nay chi tai video cu, khong tao lai va khong dung them credit.
+Co the nhap ma video tu thong bao loi vao o tai lai trong phan Lich su.
+Mac dinh tu thu nho Chrome do tac vu mo; Chrome van chay, khong headless.
+Cua so dang nhap khong bi thu nho. Bo chon truoc tac vu neu can xem Chrome.
+
 KHONG chay setup-windows.bat cua ban cu.
 KHONG can cai Python, pip, uv hay Visual C++ Build Tools.
 Python 3.12 va thu vien Windows da duoc dong goi san, gom lz4 da bien dich.
@@ -21,8 +27,10 @@ Ung dung tu chon cong trong de tranh xung dot voi ban dang mo.
 Neu trinh duyet khong tu mo, xem so cong trong cua so dong lenh
 va nhap http://127.0.0.1:SO_CONG (thay SO_CONG bang so hien tren man hinh).
 
-DA KIEM TRA: hash va wheel Windows, dong goi ZIP, giao dien/API tren Linux.
-CHUA KIEM THU: chay executable tren Windows va tao anh/video Google that.
+DA KIEM TRA: hash va wheel Windows, dong goi ZIP, giao dien/API tren Linux,
+nhan dien loi tai va lenh tai lai khong tao moi, cap nhat giu du lieu.
+CHUA KIEM THU: Win32 thu nho cua so, executable tren Windows,
+va tai lai/tao anh-video voi phien Google that.
 
 Engine gflow-cli 0.92.1 (MIT): https://github.com/ffroliva/gflow-cli
 Python Windows duoc uv tai va xac minh; license trong runtime/LICENSE.txt.
